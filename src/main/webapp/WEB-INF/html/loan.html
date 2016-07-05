@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Loan page</title>
+    <div>Making a loan</div>
+</head>
+<body>
+<form id="loanForm" action="#" th:action="@{/processLoan}" th:object="${loan}" method="post" autocomplete="off">
+    <div>Welcome to the loan platform!</div>
+    <div id="validation" th:text="${validationError}"></div>
+    <label for="term">Loan term:</label>
+    <input type="text" th:field="*{term}" id="term"/>
+    <label for="amount">Loan amount:</label>
+    <input type="text" th:field="*{amount}" id="amount"/>
+    <div th:object="${user}"/>
+</form>
+<button type="submit" form="loanForm" value="loan">Get loan</button>
+</body>
+</html>
