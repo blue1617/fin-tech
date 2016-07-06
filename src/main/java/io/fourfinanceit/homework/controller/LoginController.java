@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 
 @Controller
@@ -24,24 +25,19 @@ public class LoginController {
 
     @Autowired
     private LoginService loginService;
-    @Autowired
-    private UserRepository userRepository;
 
     @RequestMapping(value = "/login", method = GET)
-    public String index(Model model) {
-        model.addAttribute("`user", new User());
+    public String index(@ModelAttribute User user, Model model) {
+        model.addAttribute("user", new User());
         return "login";
     }
 
     @RequestMapping(value = "/processLogin", method = RequestMethod.POST)
-    public String checkPersonInfo(@ModelAttribute User user, Model model) {
+    public String checkPersonInfo(@ModelAttribute User user, Model model, HttpSession httpSession) {
         if (loginService.isValid(user)) {
-            Loan loan = new Loan();
-            User foundUser = userRepository.findBySurname(user.getSurname());
-            loan.setUser(foundUser);
-            model.addAttribute("loan", loan);
-            model.addAttribute("user", user);
-            //todo: save user on session. cookie?
+            httpSession.setAttribute("user.firstName", user.getFirstName());
+            httpSession.setAttribute("user.surname", user.getSurname());
+            model.addAttribute("loan", new Loan());
             return "loan";
         } else {
             model.addAttribute("validationError", "Invalid credentials!!!");
